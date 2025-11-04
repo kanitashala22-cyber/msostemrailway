@@ -34,6 +34,15 @@ export const RESPONSIVE_LESSONS = [
             h1 { font-size: 40px; }
         }
     </style>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VD8ZK8GZVE"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-VD8ZK8GZVE');
+    </script>
 </head>
 <body>
     <div class="container">

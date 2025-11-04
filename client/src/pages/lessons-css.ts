@@ -14,6 +14,15 @@ export const CSS_LESSONS = [
         p { color: #666; line-height: 1.6; }
         .highlight { background-color: yellow; }
     </style>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VD8ZK8GZVE"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-VD8ZK8GZVE');
+    </script>
 </head>
 <body>
     <h1>Welcome to CSS!</h1>
