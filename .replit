@@ -7,7 +7,7 @@ channel = "stable-24_05"
 packages = ["gir-rs"]
 
 [deployment]
-deploymentTarget = "static"
+deploymentTarget = "cloudrun"
 build = ["npm", "run", "build"]
 run = ["npm", "run", "start"]
 publicDir = "dist/public"
