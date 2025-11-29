@@ -9,17 +9,11 @@ import { nanoid } from "nanoid";
 const viteLogger = createLogger();
 
 /**
- * Simple log function with timestamp
+ * Simple, production-safe log function with ISO timestamp
  */
 export function log(message: string, source = "express") {
-  const formattedTime = new Date().toLocaleTimeString("en-US", {
-    hour: "numeric",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: true,
-  });
-
-  console.log(`${formattedTime} [${source}] ${message}`);
+  const timestamp = new Date().toISOString();
+  console.log(`[${timestamp}] [${source}] ${message}`);
 }
 
 /**
@@ -49,14 +43,14 @@ export async function setupVite(app: Express, server: Server) {
   // Use Vite dev middleware
   app.use(vite.middlewares);
 
-  // Handle all SPA routes
+  // Handle all SPA routes for dev
   app.use("*", async (req, res, next) => {
     const url = req.originalUrl;
 
     try {
       const clientTemplate = path.resolve(process.cwd(), "client", "index.html");
 
-      // always reload the index.html file from disk in case it changes
+      // Always reload index.html from disk
       let template = await fs.promises.readFile(clientTemplate, "utf-8");
       template = template.replace(
         `src="/src/main.tsx"`,
