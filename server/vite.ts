@@ -8,17 +8,17 @@ import { nanoid } from "nanoid";
 
 const viteLogger = createLogger();
 
-/**
- * Simple, production-safe log function with ISO timestamp
- */
 export function log(message: string, source = "express") {
-  const timestamp = new Date().toISOString();
-  console.log(`[${timestamp}] [${source}] ${message}`);
+  const formattedTime = new Date().toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: true,
+  });
+
+  console.log(${formattedTime} [${source}] ${message});
 }
 
-/**
- * Setup Vite dev server middleware (for development)
- */
 export async function setupVite(app: Express, server: Server) {
   const serverOptions = {
     middlewareMode: true,
@@ -40,23 +40,24 @@ export async function setupVite(app: Express, server: Server) {
     appType: "custom",
   });
 
-  // Use Vite dev middleware
   app.use(vite.middlewares);
-
-  // Handle all SPA routes for dev
   app.use("*", async (req, res, next) => {
     const url = req.originalUrl;
 
     try {
-      const clientTemplate = path.resolve(process.cwd(), "client", "index.html");
-
-      // Always reload index.html from disk
-      let template = await fs.promises.readFile(clientTemplate, "utf-8");
-      template = template.replace(
-        `src="/src/main.tsx"`,
-        `src="/src/main.tsx?v=${nanoid()}"`
+      const clientTemplate = path.resolve(
+        import.meta.dirname,
+        "..",
+        "client",
+        "index.html",
       );
 
+      // always reload the index.html file from disk incase it changes
+      let template = await fs.promises.readFile(clientTemplate, "utf-8");
+      template = template.replace(
+        src="/src/main.tsx",
+        src="/src/main.tsx?v=${nanoid()}",
+      );
       const page = await vite.transformIndexHtml(url, template);
       res.status(200).set({ "Content-Type": "text/html" }).end(page);
     } catch (e) {
@@ -66,24 +67,19 @@ export async function setupVite(app: Express, server: Server) {
   });
 }
 
-/**
- * Serve built frontend for production
- */
 export function serveStatic(app: Express) {
-  const distPath = path.resolve(process.cwd(), "client", "dist");
+  const distPath = path.resolve(import.meta.dirname, "public");
 
   if (!fs.existsSync(distPath)) {
     throw new Error(
-      `Could not find the build directory: ${distPath}. Make sure to build the client first.`
+      Could not find the build directory: ${distPath}, make sure to build the client first,
     );
   }
 
-  // Serve static files from dist
   app.use(express.static(distPath));
 
-  // Fallback to index.html for SPA routes
+  // fall through to index.html if the file doesn't exist
   app.use("*", (_req, res) => {
     res.sendFile(path.resolve(distPath, "index.html"));
   });
 }
-
