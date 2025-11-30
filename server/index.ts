@@ -20,9 +20,9 @@ app.use((req, res, next) => {
   res.on("finish", () => {
     const duration = Date.now() - start;
     if (path.startsWith("/api")) {
-      let logLine = ${req.method} ${path} ${res.statusCode} in ${duration}ms;
+      let logLine = `${req.method} ${path} ${res.statusCode} in ${duration}ms`;
       if (capturedJsonResponse) {
-        logLine +=  :: ${JSON.stringify(capturedJsonResponse)};
+        logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
       }
       if (logLine.length > 80) {
         logLine = logLine.slice(0, 79) + "…";
@@ -54,6 +54,7 @@ app.use((req, res, next) => {
   // ✅ Use the PORT environment variable and remove reusePort
   const port = parseInt(process.env.PORT || "5000", 10);
   server.listen(port, "0.0.0.0", () => {
-    log(Server running on port ${port});
+    log(`Server running on port ${port}`);
   });
+
 })();
